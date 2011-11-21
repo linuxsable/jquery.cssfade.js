@@ -1,0 +1,21 @@
+Author: @_ty
+Tested with: 1.6.4.
+
+jQuery plugin for css fades.
+It's usage is identical to jQuerys fadeIn, fadeOut & fadeToggle,
+except you must pass in a number in ms for the duration.
+
+Currently this plugin assumes that you can handle
+CSS3 (no detection support yet).
+
+Example Usage: 
+
+$('body').cssFadeIn(600, 'linear', function() {
+    boom();
+});
+
+$('body').cssFadeIn(300, function() {
+   boom();
+});
+
+$('body').cssFadeToggle();
