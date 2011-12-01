@@ -31,9 +31,10 @@
         'cubic-bezier'
     ];
     
-    // The meat of the plugin. Used as "common" to save code.
-    var common = function($this, type, duration, easing, callback) {
-        var callback = callback || function() {};
+    // The meat of the plugin.
+    var common = function($this, type, duration, easing, callback, opacity) {
+        var callback = callback || function() {},
+            opacity = parseFloat(opacity);
 
         if (typeof easing === 'function') {
             callback = easing;
@@ -68,8 +69,14 @@
         // Start the animation, hit callback when done
         if (type == 'in') {
             $this.css('opacity', 1);
-        } else {
+        }
+        else if (type == 'out') {
             $this.css('opacity', 0);
+        }
+        else if (type == 'to') {
+            if (opacity != NaN) {
+                $this.css('opacity', opacity);
+            }
         }
         setTimeout(callback, duration);
     };
@@ -87,8 +94,9 @@
     };
     
     // Equivalent of $().fadeTo()
-    $.fn.cssFadeTo = function() {
-        throw 'Not implemented yet';
+    $.fn.cssFadeTo = function(duration, opacity, easing, callback) {
+        common(this, 'to', duration, easing, callback, opacity);
+        return this;
     };
     
     // Equivalent of $().fadeToggle
