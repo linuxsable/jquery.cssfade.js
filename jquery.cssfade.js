@@ -1,38 +1,78 @@
 /*
- * Author: @_ty
- * Tested with: 1.6.4.
+ * Copyright (c) 2012 Tyler Van Hoomissen (@_ty)
+ * Licensed under the MIT license.
  *
- * jQuery plugin for css fades.
- * It's usage is identical to jQuerys fadeIn, fadeOut & fadeToggle,
- * except you must pass in a number in ms for the duration.
+ * Version: 0.0.1
+ * Tested with: jQuery 1.7.2.
  *
- * Currently this plugin assumes that you can handle
- * CSS3 (no detection support yet).
+ * jQuery plugin for CSS3 fade transitions.
  *
- * Example Usage: 
+ * It's usage is practially identical to the jQuery
+ * fade methods.
  *
- * $('body').cssFadeIn(600, 'linear', function() {
- *     boom();
- * });
+ * Currently this plugin does not support browser
+ * detection of transition support. Help me build it?
  *
- * $('body').cssFadeIn(300, function() {
+ * Example Usage:
+ *
+ * $('.fadeable').cssFade('in', 600);
+ *
+ * $('.fadeable').cssFade('out', 300, 'linear', function() {
  *    boom();
- * });
+ * })
  *
- * $('body').cssFadeToggle();
+ * $('.fadeable').cssFade('toggle');
+ *
+ * $('.fadeable').cssFade('to', 500, 0.2);
+ *
  */
 (function($) {
+    // Underscored names to avoid js keyword conflicts
+    var methods = {
+        // Equivalent of $.fadeIn()
+        _in: function(duration, easing, callback) {
+            fade(this, 'in', duration, easing, callback);
+            return this;
+        },
+
+        // Equivalent of $.fadeOut()
+        _out: function(duration, easing, callback) {
+            fade(this, 'out', duration, easing, callback);
+            return this;
+        },
+
+        // Equivalent of $.fadeTo()
+        _to: function(duration, opacity, easing, callback) {
+            fade(this, 'to', duration, easing, callback, opacity);
+            return this;
+        },
+
+        // Equivalent of $.fadeToggle()
+        _toggle: function(duration, easing, callback) {
+            if ( this.css('opacity') >= 1 ) {
+                fade(this, 'out', duration, easing, callback);
+            }
+            else if ( this.css('opacity') <= 0 ) {
+                fade(this, 'in', duration, easing, callback);
+            }
+            return this;
+        }
+    };
+
     var timingFunctions = [
         'default',
         'linear',
+        'ease',
         'ease-in',
         'ease-out',
         'ease-in-out',
         'cubic-bezier'
     ];
+
+    var defaultTiming = 'ease';
     
     // The meat of the plugin.
-    var common = function($this, type, duration, easing, callback, opacity) {
+    function fade($this, type, duration, easing, callback, opacity) {
         var callback = callback || function() {},
             opacity = parseFloat(opacity);
 
@@ -46,11 +86,11 @@
         }
         
         if (easing === undefined) {
-            easing = 'linear';
+            easing = defaultTiming;
         } else {
             // Check if the easing type is valid
             if ( !$.inArray(easing, timingFunctions) ) {
-                easing = 'linear';
+                easing = defaultTiming;
             }
         }
         
@@ -59,11 +99,10 @@
         $this.css({
             '-webkit-transition': line,
             '-webkit-backface-visibility': 'hidden',
-            '-webkit-perspective': '1000px',
-        	'-moz-transition': line,
-        	'-o-transition': line,
-        	'-ms-transition': line,
-        	'transition': line
+            '-moz-transition': line,
+            '-o-transition': line,
+            '-ms-transition': line,
+            'transition': line
         });
 
         // Start the animation, hit callback when done
@@ -78,35 +117,22 @@
                 $this.css('opacity', opacity);
             }
         }
-        setTimeout(callback, duration);
-    };
-    
-    // Equivalent of $().fadeIn()
-    $.fn.cssFadeIn = function(duration, easing, callback) {
-        common(this, 'in', duration, easing, callback);
-        return this;
-    };
-    
-    // Equivalent of $().fadeOut()
-    $.fn.cssFadeOut = function(duration, easing, callback) {
-        common(this, 'out', duration, easing, callback);
-        return this;
-    };
-    
-    // Equivalent of $().fadeTo()
-    $.fn.cssFadeTo = function(duration, opacity, easing, callback) {
-        common(this, 'to', duration, easing, callback, opacity);
-        return this;
-    };
-    
-    // Equivalent of $().fadeToggle
-    $.fn.cssFadeToggle = function(duration, easing, callback) {
-        if ( this.css('opacity') >= 1 ) {
-            common(this, 'out', duration, easing, callback);
+        
+        setTimeout(function() {
+            callback($this);
+        }, duration);
+    }
+
+    $.fn.cssFade = function(method) {
+        var _method = '_' + method;
+        if (methods[_method]) {
+            return methods[_method].apply(this, Array.prototype.slice.call(arguments, 1));
+        } else {
+            if (!method) {
+                $.error('Must pass a valid fade method: (in, out, to, toggle).');
+            } else {
+                $.error('Invalid fade method. Options: (in, out, to, toggle).');
+            }
         }
-        else if ( this.css('opacity') <= 0 ) {
-            common(this, 'in', duration, easing, callback);
-        }
-        return this;
     };
 })(jQuery);
