@@ -2,7 +2,7 @@
  * Copyright (c) 2012 Tyler Van Hoomissen (@_ty)
  * Licensed under the MIT license.
  *
- * Version: 0.0.1
+ * Version: 0.0.2
  * Tested with: jQuery 1.7.2.
  *
  * jQuery plugin for CSS3 fade transitions.

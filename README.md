@@ -1,25 +1,37 @@
-Copyright (c) 2012 Tyler Van Hoomissen (@_ty)
-Licensed under the MIT license.
-
-Version: 0.0.1
-Tested with: jQuery 1.7.2.
-
+### Overview
 jQuery plugin for CSS3 fade transitions.
 
 It's usage is practially identical to the jQuery
 fade methods.
 
 Currently this plugin does not support browser
-detection of transition support. Help me build it?
+detection to see if transactions are available.
+Help me build it?
 
-Example Usage:
 
-$('.fadeable').cssFade('in', 600);
+### Version
+v0.0.2
+Tested with: jQuery 1.7.2.
 
-$('.fadeable').cssFade('out', 300, 'linear', function() {
-    boom();
-})
 
-$('.fadeable').cssFade('toggle');
+### Copyright
 
-$('.fadeable').cssFade('to', 500, 0.2);
+Copyright (c) 2012 Tyler Van Hoomissen (@_ty)
+Licensed under the MIT license.
+
+
+### Example Usage
+
+    $('.fadeable').cssFade('in', 600);
+
+    $('.fadeable').cssFade('out', 300, 'linear', function() {
+        boom();
+    })
+
+    $('.fadeable').cssFade('toggle');
+
+    $('.fadeable').cssFade('to', 500, 0.2);
+    
+### TODO
+
+* Browser transition detection and fallback to js if unsupported
