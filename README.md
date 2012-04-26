@@ -11,12 +11,14 @@ Help me build it?
 
 ### Version
 v0.0.2
+
 Tested with: jQuery 1.7.2.
 
 
 ### Copyright
 
-Copyright (c) 2012 Tyler Van Hoomissen (@_ty)
+Copyright (c) 2012 Tyler Van Hoomissen (@_ty).
+
 Licensed under the MIT license.
 
 
@@ -35,3 +37,4 @@ Licensed under the MIT license.
 ### TODO
 
 * Browser transition detection and fallback to js if unsupported
+* Demo page
