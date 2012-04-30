@@ -27,6 +27,9 @@
  *
  */
 (function($) {
+    // var transitions = supportsTransitions();
+    var transitions = false;
+
     // Underscored names to avoid js keyword conflicts
     var methods = {
         // Equivalent of $.fadeIn()
@@ -49,12 +52,16 @@
 
         // Equivalent of $.fadeToggle()
         _toggle: function(duration, easing, callback) {
-            if ( this.css('opacity') >= 1 ) {
-                fade(this, 'out', duration, easing, callback);
-            }
-            else if ( this.css('opacity') <= 0 ) {
-                fade(this, 'in', duration, easing, callback);
-            }
+            if (transitions) {
+                if ( this.css('opacity') >= 1 ) {
+                    fade(this, 'out', duration, easing, callback);
+                }
+                else if ( this.css('opacity') <= 0 ) {
+                    fade(this, 'in', duration, easing, callback);
+                }    
+            } else {
+                fade(this, 'toggle', duration, easing, callback);
+            }            
             return this;
         }
     };
@@ -70,9 +77,19 @@
     ];
 
     var defaultTiming = 'ease';
-    
-    // The meat of the plugin.
+
     function fade($this, type, duration, easing, callback, opacity) {
+        if (transitions) {
+            console.log("css");
+            cssFade($this, type, duration, easing, callback, opacity);
+        } else {
+            console.log("JS");
+            jsFade($this, type, duration, easing, callback, opacity);
+        }
+    }
+    
+    // Fade using css if supported
+    function cssFade($this, type, duration, easing, callback, opacity) {
         var callback = callback || function() {},
             opacity = parseFloat(opacity);
 
@@ -121,6 +138,38 @@
         setTimeout(function() {
             callback($this);
         }, duration);
+    }
+
+    // Fade with js as a fallback if not supporting transitions
+    function jsFade($this, type, duration, easing, callback, opacity) {
+        if (type == 'in') {
+            $this.fadeIn(duration, easing, callback);
+        }
+        else if (type == 'out') {
+            $this.fadeOut(duration, easing, callback);
+        }
+        else if (type == 'to') {
+            $this.fadeTo(duration, opacity, easing, callback);
+        }
+        else if (type == 'toggle') {
+            $this.fadeToggle(duration, easing, callback);
+        }
+    }
+
+    // http://stackoverflow.com/questions/7264899/detect-css-transitions-using-javascript-and-without-modernizr
+    function supportsTransitions() {
+        var b = document.body || document.documentElement;
+        var s = b.style;
+        var p = 'transition';
+        if (typeof s[p] == 'string') {return true; }
+
+        // Tests for vendor specific prop
+        v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
+        p = p.charAt(0).toUpperCase() + p.substr(1);
+        for (var i=0; i<v.length; i++) {
+          if (typeof s[v[i] + p] == 'string') { return true; }
+        }
+        return false;
     }
 
     $.fn.cssFade = function(method) {
