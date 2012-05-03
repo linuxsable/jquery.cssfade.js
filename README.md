@@ -24,7 +24,7 @@ Help me build it?
     
 ### Version
 
-v0.0.2
+v0.0.3
 
 Tested with: jQuery 1.7.2.
 

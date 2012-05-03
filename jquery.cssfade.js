@@ -2,7 +2,7 @@
  * Copyright (c) 2012 Tyler Van Hoomissen (@_ty)
  * Licensed under the MIT license.
  *
- * Version: 0.0.2
+ * Version: 0.0.3
  * Tested with: jQuery 1.7.2.
  *
  * jQuery plugin for CSS3 fade transitions.
@@ -76,6 +76,11 @@
         var callback = callback || function() {},
             opacity = parseFloat(opacity);
 
+        if (typeof duration === 'function') {
+            callback = duration;
+            duration = undefined;
+        }
+
         if (typeof easing === 'function') {
             callback = easing;
             easing = undefined;
@@ -97,6 +102,7 @@
         // Set default properties for css fade in
         var line = 'opacity '+duration+'ms '+easing;
         $this.css({
+            'opacity': '0',
             '-webkit-transition': line,
             '-webkit-backface-visibility': 'hidden',
             '-moz-transition': line,
@@ -104,6 +110,17 @@
             '-ms-transition': line,
             'transition': line
         });
+
+        // This fixes a very odd bug where a tag with
+        // an inline style of "display:none" would not
+        // fade correctly. This makes sure that it's not present
+        // after it has opacity so that it will never show before
+        // the animation, yet fixes the problem.
+        $this.css('display', '');
+
+        if (!$this.is(':visible')) {
+            $this.show();
+        }
 
         // Start the animation, hit callback when done
         if (type == 'in') {
