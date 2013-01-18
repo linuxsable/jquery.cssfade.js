@@ -6,7 +6,7 @@ It's usage is practially identical to the jQuery
 fade methods.
 
 Currently this plugin does not support browser
-detection to see if transactions are available.
+detection to see if transitions are available.
 Help me build it?
 
 
